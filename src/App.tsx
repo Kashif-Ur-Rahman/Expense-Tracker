@@ -1,14 +1,14 @@
-// src/App.tsx
 import React from 'react';
-import { TransactionProvider } from './contexts/TransactionContext';
+import { Provider } from 'react-redux';
+import { store } from './redux/store'; 
 import Home from './pages/Home';
+import './index.css';
 
 const App: React.FC = () => {
   return (
-    <TransactionProvider>
+    <Provider store={store}>
       <Home />
-    </TransactionProvider>
-   
+    </Provider>
   );
 };
 

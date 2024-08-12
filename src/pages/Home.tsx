@@ -1,12 +1,16 @@
-import React, { useContext, useState } from 'react';
-import { TransactionContext, Transaction } from '../contexts/TransactionContext';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../redux/store';
+import { addTransaction, deleteTransaction, Transaction } from './../redux/transactionSlice';
 import { FaArrowDown } from "react-icons/fa6";
 import Button from './../components/Button';
 
 const Home: React.FC = () => {
-  const { state, dispatch } = useContext(TransactionContext)!;
+  const transactions = useSelector((state: RootState) => state.transactions.transactions);
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState<Transaction>({
+    id: '', 
     name: '',
     transactionType: 'Income',
     amount: 0,
@@ -23,21 +27,22 @@ const Home: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.name && formData.amount) {
-      dispatch({ type: 'ADD_TRANSACTION', payload: formData });
-      setFormData({ name: '', transactionType: 'Income', amount: 0 });
+      const newTransaction = { ...formData, id: Date.now().toString() }; 
+      dispatch(addTransaction(newTransaction));
+      setFormData({ id: '', name: '', transactionType: 'Income', amount: 0 });
     }
   };
 
-  const handleDelete = (index: number) => {
-    dispatch({ type: 'DELETE_TRANSACTION', index });
+  const handleDelete = (id: string) => {
+    dispatch(deleteTransaction(id));
   };
 
-  const incomeTotal = state.transactions.reduce(
+  const incomeTotal = transactions.reduce(
     (acc, transaction) =>
       transaction.transactionType === 'Income' ? acc + transaction.amount : acc,
     0
   );
-  const expensesTotal = state.transactions.reduce(
+  const expensesTotal = transactions.reduce(
     (acc, transaction) =>
       transaction.transactionType === 'Expenses' ? acc + transaction.amount : acc,
     0
@@ -122,15 +127,15 @@ const Home: React.FC = () => {
             History <FaArrowDown className="inline-block size-6 " />
           </h2>
           <div className="space-y-2">
-            {state.transactions.map((transaction, index) => (
-              <div key={index} className="flex justify-between bg-blue-200 p-4 rounded shadow">
+            {transactions.map((transaction) => (
+              <div key={transaction.id} className="flex justify-between bg-blue-200 p-4 rounded shadow">
                 <div>
                   {transaction.name} - ${transaction.amount}
                 </div>
 
                 <Button
                   text="DELETE"
-                  onClick={() => handleDelete(index)}
+                  onClick={() => handleDelete(transaction.id)}
                   className="bg-red-500 text-white py-1 px-2 rounded"
                 />
 
