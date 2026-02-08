@@ -1,6 +1,6 @@
 <<<<<<< HEAD
 # Expense-Tracker
-This is the 'Expense Tracker' Project which I used the Context API, use Reducer Hook, use State Hook with React JS, TypeScript and Tailwind CSS.
+This is the ‘Expense Tracker’ project, built using React JS, TypeScript, and Tailwind CSS, utilizing Context API, useReducer, and useState hooks for state management.
 =======
 # React + TypeScript + Vite
 
